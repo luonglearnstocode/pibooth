@@ -35,11 +35,11 @@ def shoot(temp, lux):
 			#add date time to the image
 			camera.annotate_text = strftime('%d-%m-%Y %H:%M:%S', localtime())
 			#camera.annotate_text = temp
-			camera.capture('/var/www/html/image.jpg')
+			camera.capture('image.jpg')
 			camera.stop_preview()
 
 def editImage(temp):
-	base_path = '/var/www/html/image.jpg'
+	base_path = 'image.jpg'
 	icon_path = 'icon.png'
 	base = Image.open(base_path)
 	icon = Image.open(icon_path)
@@ -52,12 +52,13 @@ def editImage(temp):
 	text = str(int(float(temp))) + u"\N{DEGREE SIGN}" + 'C' 
 	draw.text((180,620),text,(0,0,0), font=font)
 	base.save(base_path)
+	base.save('/var/www/html/image.jpg')
 
 def tweet(temp, lux):
 	twitter = Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_KEY,ACCESS_SECRET) 
 	toTweet = 'Current condition: ' + str(int(float(temp))) + u'\N{DEGREE SIGN}' + 'C ' \
 		+ str(int(float(lux))) + ' lux'
-	photo = open('/var/www/html/image.jpg','rb')
+	photo = open('image.jpg','rb')
 	#twitter.update_status_with_media(media=photo, status=toTweet)
 	response = twitter.upload_media(media=photo)
 	twitter.update_status(status=toTweet, media_ids=[response['media_id']]) 
