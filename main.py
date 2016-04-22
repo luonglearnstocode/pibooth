@@ -1,6 +1,6 @@
 import serial
 from cam import shoot, editImage, tweet
-from useRRD import addData, graphRRD
+from useRRD import addData, graphRRD, saveGraphToHtml
 
 port = serial.Serial('/dev/ttyAMA0',115200,timeout = 1)
 data = []
@@ -8,18 +8,19 @@ data = []
 while True:
 	dataReceivedString = port.readline()
 	currentData = dataReceivedString.split(' ')
-	#data.append(currentData)
 	print(currentData)
-	if currentData != ['']:
+	if len(currentData) == 3:
 		temp = currentData[0]
 		lux = currentData[1]
 		data.append(currentData)
+		addData(temp, lux)
+                graphRRD()		
+		saveGraphToHtml()
 		if currentData[2] == '1':
 			print('shoot!')
 			shoot(temp,lux)		
 			editImage(temp)
 			tweet(temp,lux)
-			addData(temp, lux)
-			graphRRD()
-			print('Tweeted successfully!')
+			print('Tweeted successfully!')	
+		
 			
